@@ -1,1 +1,1 @@
-jupyter-nbconvert --execute practic.ipynb 
+jupyter-nbconvert --execute practic.ipynb & practic.html
