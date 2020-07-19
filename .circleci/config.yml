@@ -11,9 +11,13 @@ jobs:
        - run: pip install jupyter 
        - run: pip install -r requirements.txt
        - run: .\run
+       - run: pip install kaggle
+       - run: export KAGGLE_USERNAME = javaproman
+       - run: export KAGGLE_KEY = $KAGGLE_KEY
+       - run: kaggle competitions submit -f titanic.csv -m 'first' -q titanic
        - store_artifacts:
-          path: .\practic.html
-          destination: .\practic.html
+          path: .\titanic.csv
+          destination: .\titanic.csv
 workflows:
   main:
     jobs:
