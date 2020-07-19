@@ -1,1 +1,20 @@
+version: 2.1
 
+orbs:
+  win: circleci/windows@2.2.0
+
+jobs:
+  build-and-test:
+     executor: win/default
+     steps:
+       - checkout
+       - run: pip install jupyter 
+       - run: pip install -r requirements.txt
+       - run: .\run
+       - store_artifacts:
+          path: .\practic.html
+          destination: .\practic.html
+workflows:
+  main:
+    jobs:
+      - build-and-test
