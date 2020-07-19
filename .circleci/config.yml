@@ -9,7 +9,7 @@ jobs:
      steps:
        - checkout
        - run: pip install jupyter 
-       - run: pip install -r .\requirements.txt
+       - run: pip install -r requirements.txt
        - run: .\run
        - store_artifacts:
           path: .\practic.html
