@@ -9,15 +9,21 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QDialog,QMessageBox
 import chessAI
 import threading
+class UI_NoHintWindow(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent, QtCore.Qt.Window)
+        self.est = QtWidgets.QTextEdit(self)
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
         MainWindow.setWindowFlag(QtCore.Qt.WindowStaysOnTopHint)
-        MainWindow.resize(421, 179)
+        MainWindow.resize(421, 209)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
@@ -57,6 +63,11 @@ class Ui_MainWindow(object):
         self.Start = QtWidgets.QPushButton(self.centralwidget)
         self.Start.setObjectName(u"Start")
         self.Start.setGeometry(QtCore.QRect(150, 80, 141, 61))
+        self.NoHintMode = QtWidgets.QPushButton(self.centralwidget)
+        self.NoHintMode.setObjectName(u"NoHintMode")
+        self.NoHintMode.setGeometry(QtCore.QRect(150, 179, 141, 25))
+
+
         self.checkBoxAutoMove = QtWidgets.QCheckBox(self.centralwidget)
         self.checkBoxAutoMove.setObjectName(u"checkBoxAutoMove")
         self.checkBoxAutoMove.setGeometry(QtCore.QRect(310, 10, 70, 17))
@@ -70,6 +81,13 @@ class Ui_MainWindow(object):
         self.lineEdit_est = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_est.setObjectName(u"lineEdit_est")
         self.lineEdit_est.setGeometry(QtCore.QRect(220, 60, 71, 16))
+
+        self.lineEdit_move = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_move.setObjectName(u"lineEdit_move")
+        self.lineEdit_move.setGeometry(QtCore.QRect(10, 179, 131, 25))
+
+
+
         self.label_depth = QtWidgets.QLabel(self.centralwidget)
         self.label_depth.setObjectName(u"label_depth")
         self.label_depth.setGeometry(QtCore.QRect(300, 150, 51, 16))
@@ -103,12 +121,13 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtCore.QCoreApplication.translate("MainWindow", u"MainWindow", None))
-        self.label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Move :", None))
+        self.label.setText(QtCore.QCoreApplication.translate("MainWindow", u"Side :", None))
         self.move_line.setText(QtCore.QCoreApplication.translate("MainWindow", u"white", None))
         self.label_moves.setText(QtCore.QCoreApplication.translate("MainWindow", u"         Engine moves:", None))
         self.button_move1.setText("")
         self.button_move2.setText("")
         self.button_move3.setText("")
+        self.NoHintMode.setText("Without hints")
         self.Start.setText(QtCore.QCoreApplication.translate("MainWindow", u"Start", None))
         self.checkBoxAutoMove.setText(QtCore.QCoreApplication.translate("MainWindow", u"AutoMove", None))
         self.checkBoxShowAddBoard.setText(QtCore.QCoreApplication.translate("MainWindow", u"ShowAddBoard", None))
@@ -125,6 +144,7 @@ class Ui_MainWindow(object):
 class mywindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(mywindow, self).__init__()
+        self.w=[]
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.Start.clicked.connect(self.btn_start)
@@ -132,7 +152,12 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.checkBoxAutoMove.stateChanged.connect(self.auto_move)
         self.ui.spinBox.valueChanged.connect(self.depth)
         self.ui.button_move1.clicked.connect(self.make_move1)
+        self.ui.NoHintMode.clicked.connect(self.to_NoHint)
         self.Main_instance=chessAI.Main(mainwindow=self)
+
+    def to_NoHint(self):# Не доделано
+        self.w= UI_NoHintWindow(self)
+        self.w.show()
     def make_move1(self):
         self.Main_instance.make_move(self.Main_instance.bestmoves[0][0])
 
