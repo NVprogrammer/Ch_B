@@ -9,9 +9,7 @@
 import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog,QMessageBox
 import chessAI
-import threading
 class UI_NoHintWindow(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent, QtCore.Qt.Window)
@@ -86,12 +84,20 @@ class Ui_MainWindow(object):
         self.lineEdit_move.setObjectName(u"lineEdit_move")
         self.lineEdit_move.setGeometry(QtCore.QRect(10, 179, 131, 25))
 
+        self.lineEdit_fps = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_fps.setObjectName(u"lineEdit_fps")
+        self.lineEdit_fps.setGeometry(QtCore.QRect(351, 179, 50, 16))
+
 
 
         self.label_depth = QtWidgets.QLabel(self.centralwidget)
         self.label_depth.setObjectName(u"label_depth")
         self.label_depth.setGeometry(QtCore.QRect(300, 150, 51, 16))
         self.label_depth.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label_fps = QtWidgets.QLabel(self.centralwidget)
+        self.label_fps.setObjectName(u"label_fps")
+        self.label_fps.setGeometry(QtCore.QRect(300, 179, 51, 16))
+        self.label_fps.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.pushButton_change = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_change.setObjectName(u"pushButton_change")
         self.pushButton_change.setGeometry(QtCore.QRect(150, 140, 141, 31))
@@ -133,6 +139,7 @@ class Ui_MainWindow(object):
         self.checkBoxShowAddBoard.setText(QtCore.QCoreApplication.translate("MainWindow", u"ShowAddBoard", None))
         self.label_est.setText(QtCore.QCoreApplication.translate("MainWindow", u"  Estimation:", None))
         self.label_depth.setText(QtCore.QCoreApplication.translate("MainWindow", u"   Depth:", None))
+        self.label_fps.setText(QtCore.QCoreApplication.translate("MainWindow", u"   FPS:", None))
         self.pushButton_change.setText(QtCore.QCoreApplication.translate("MainWindow", u"Change", None))
         self.working.setText("")
         self.radioButton_wK.setText(QtCore.QCoreApplication.translate("MainWindow", u"White 0-0", None))
@@ -164,9 +171,12 @@ class mywindow(QtWidgets.QMainWindow):
     def depth(self):
         self.Main_instance.depth=self.ui.spinBox.value()
     def btn_start(self):
-            if(self.ui.Start.text()=='Close'):sys.exit(0)
-            self.Main_instance.start()
-            self.ui.Start.setText('Close')
+            if(self.ui.Start.text()=='Pause'):
+                self.Main_instance.pause=False
+                self.alreadyMate = False
+            else:
+                self.Main_instance.start()
+                self.ui.Start.setText('Pause')
     def changeSides(self):
         self.Main_instance.movenum = 0
         self.Main_instance.prev_fen = ''
