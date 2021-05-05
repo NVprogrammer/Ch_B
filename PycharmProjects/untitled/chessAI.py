@@ -10,7 +10,7 @@ import subprocess
 import pyautogui as pag
 from PyQt5.QtCore import QThread
 from pynput import  keyboard
-
+import chessAI_GUI
 class Main(QThread):
     figures = ['bB_w.PNG', 'bK_w.PNG', 'bN_w.PNG', 'bp_w.PNG', 'bQ_w.PNG', 'bR_w.PNG', 'wB_w.PNG', 'wK_w.PNG',
                'wN_w.PNG', 'wp_w.PNG', 'wQ_w.PNG', 'wR_w.PNG', 'emp_w.PNG',
@@ -26,8 +26,10 @@ class Main(QThread):
         self.black_m = ''
         self.side = 'w'
         self.depth = ''
+        self.thread_num=2
         self.est = ''
         self.autoMove = False
+        self.castled = False
         self.timeThink = 0.30
         self.bestmoves = []
         self.move="w"
@@ -35,7 +37,6 @@ class Main(QThread):
     def __init__(self,mainwindow,parent=None):
         super().__init__()
         self.mainwindow=mainwindow
-
         self.figures = ['bB_w.PNG', 'bK_w.PNG', 'bN_w.PNG', 'bp_w.PNG', 'bQ_w.PNG', 'bR_w.PNG', 'wB_w.PNG', 'wK_w.PNG',
                'wN_w.PNG', 'wp_w.PNG', 'wQ_w.PNG', 'wR_w.PNG', 'emp_w.PNG',
                'bB_b.PNG', 'bK_b.PNG', 'bN_b.PNG', 'bp_b.PNG', 'bQ_b.PNG', 'bR_b.PNG', 'wB_b.PNG', 'wK_b.PNG',
@@ -57,11 +58,13 @@ class Main(QThread):
         self.depth = ''
         self.est = ''
         self.autoMove = False
+        self.castled = True
         self.timeThink = 0.30
         self.bestmoves=[]
         self.doNothing=False
         self.pause=False
         self.alreadyMate=False # мат на доске
+        self.isHint=False# Игра с подсказками
 
 
 
@@ -167,16 +170,20 @@ class Main(QThread):
 
             self.bestmoves=[]
             depth=self.depth=str(self.mainwindow.ui.spinBox.value())
-            print(self.depth)
+            self.thread_num=str(self.mainwindow.ui.spinBoxThread.value())
+            castle=''
+            if(self.castled):castle='--'
+            else:castle='KQkq'
+            print("ggreggegrgegregregregregerger",self.depth,self.thread_num,castle)
             stockfish = subprocess.Popen(["stockfish_20011801_x64_modern.exe"], stdout=subprocess.PIPE, stdin=subprocess.PIPE,
                                          universal_newlines=True)
             stockfish.stdin.write("uci\n")
             stockfish.stdin.flush()
             stockfish.stdin.write("setoption name Contempt value 100\n")
             stockfish.stdin.flush()
-            stockfish.stdin.write("setoption name Threads value 4\n")
+            stockfish.stdin.write("setoption name Threads value "+self.thread_num+"\n")
             stockfish.stdin.flush()
-            stockfish.stdin.write("position fen " + fen + ' ' + self.move + ' -- - 0 1' + "\ngo infinite\n ")
+            stockfish.stdin.write("position fen " + fen + ' ' + self.move +' '+ castle + ' - 0 1' + "\ngo infinite\n ")
             stockfish.stdin.flush()
             already_dep=False
             print('cycle')
